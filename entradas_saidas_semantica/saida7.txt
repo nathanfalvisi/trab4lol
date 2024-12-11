@@ -1,0 +1,1 @@
+Erro Semântico, array com tipo diferente de int na linha 2
