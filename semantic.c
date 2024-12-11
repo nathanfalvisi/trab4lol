@@ -1390,7 +1390,7 @@ yyreduce:
 #line 194 "semantic.y"
                              {
         if((yyvsp[-1].node).tipo != INT)
-            yyerror("Erro Semântico, array com tipo diferente de int");
+            yyerror("Indices de vetor não inteiro");
         for ((yyval.id_list).tam = 0; (yyval.id_list).tam < (yyvsp[-5].id_list).tam; (yyval.id_list).tam++) 
         {
             (yyval.id_list).ids[(yyval.id_list).tam] = (yyvsp[-5].id_list).ids[(yyval.id_list).tam];
@@ -1406,7 +1406,7 @@ yyreduce:
 #line 206 "semantic.y"
     {
         if((yyvsp[-1].node).tipo != INT)
-            yyerror("Erro Semântico, array com tipo diferente de int");
+            yyerror("Indices de vetor não inteiro");
         (yyval.id_list).ids[(yyval.id_list).tam] = (yyvsp[-3].val);
         (yyval.id_list).tam++;
     }

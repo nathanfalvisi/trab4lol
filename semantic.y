@@ -189,11 +189,11 @@ IDs:
         create_cod(&$$.code);
         insert_cod(&$$.code, $3.code);
         $$.ids[$$.tam] = pos;
-        $$.tam++;  // Increment the tam
+        $$.tam++;
     }
     | IDs ',' ID '[' NUM ']' {
         if($5.tipo != INT)
-            yyerror("Erro Semântico, array com tipo diferente de int");
+            yyerror("Indices de vetor não inteiro");
         for ($$.tam = 0; $$.tam < $1.tam; $$.tam++) 
         {
             $$.ids[$$.tam] = $1.ids[$$.tam];
@@ -205,7 +205,7 @@ IDs:
     | ID '[' NUM ']' 
     {
         if($3.tipo != INT)
-            yyerror("Erro Semântico, array com tipo diferente de int");
+            yyerror("Indices de vetor não inteiro");
         $$.ids[$$.tam] = $1;
         $$.tam++;
     }
