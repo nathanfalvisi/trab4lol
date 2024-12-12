@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "semantic.h"
 #include "tabsimb.h"
-int linha = 1;
+int yytype, linha = 1;
 
 int yyerror(char *s) { 
   printf("%s na linha %d\n",s,linha);
@@ -12,6 +12,7 @@ int yyerror(char *s) {
 %}
 
 dig [0-9]
+zero [0]
 letra [a-zA-Z_]
 underscore["_"]
 
@@ -59,16 +60,23 @@ underscore["_"]
 ";"   {return ';';}
 ","   {return ',';}
 
+("-")?{dig}+("."{zero}+)? {
+    yylval.val = atoi(yytext);
+    yytype = INT;
+    return NUM;
+    }
+
 ("-")?{dig}+("."{dig}+)? {
-	yylval.val = atof(yytext);
+    yylval.val = atof(yytext);
+    yytype = FLOAT;
+
 	return NUM;
 	}
 
 {letra}({letra}|{dig}|{underscore})*  {
     yylval.val = insere(yytext); 
-    //printf("INSERIDO : %s\n", yytext);
     return ID;
-    }  
+    } 
                            
 \"[^\"]*\"   { return STRING; }
 [ \t\r] {}

@@ -1,1 +1,1 @@
-Indices de vetor não inteiro na linha 2
+Tipos incompatíveis na linha 2
