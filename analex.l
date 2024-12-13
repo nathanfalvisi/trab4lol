@@ -1,8 +1,13 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include "semantic.h"
-#include "tabsimb.h"
+    #ifndef SEMANTICA
+    #include "semantic.h"
+    #define SEMANTICA
+    #endif
+    #ifndef TABSIMB
+    #define TABSIMB 
+    #include "tabsimb.h"
+    #endif
+	#include <stdlib.h>
 int yytype, linha = 1;
 
 int yyerror(char *s) { 

@@ -105,7 +105,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "semantic.y"
+#line 21 "semantic.y"
 
 		struct no{
 			int place;

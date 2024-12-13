@@ -1,6 +1,7 @@
 #include <string.h>
-#ifndef TIPOS
-#include "tipos.h"
+#ifndef ANALEX
+#include "analex.h"
+#define ANALEX
 #endif
 #define TABSIMB
 #define MAX 1000
@@ -16,6 +17,27 @@ struct symbol {
 int offset=0;
 int proximo_elem=0;
 struct symbol Tabela[MAX];
+	
+int get_tam_tipo(int tipo)
+{
+    switch (tipo)
+    {
+    case INT:
+        return 4;
+    
+    case FLOAT:
+        return 4;
+
+    case CHAR: 
+        return 1;
+
+    case VOID:
+        return 0;
+
+    default:
+        yyerror("Erro de tipos");
+    }
+}
 
 int procura(char *nome) {
 int i;	
@@ -42,7 +64,7 @@ int set_type(int pos, int tipo){
 		return -1;
 	Tabela[pos].tipo = tipo;
 	//printf("Pos %d tipo %d\n",pos,tipo);
-	Tabela[pos].tam = rtd(tipo, tipo);
+	Tabela[pos].tam = get_tam_tipo(tipo);
 	offset+=Tabela[pos].tam;
 	return 1;
 }

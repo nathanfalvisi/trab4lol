@@ -498,18 +498,23 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "analex.l"
 #line 2 "analex.l"
-#include <stdio.h>
-#include <stdlib.h>
-#include "semantic.h"
-#include "tabsimb.h"
+    #ifndef SEMANTICA
+    #include "semantic.h"
+    #define SEMANTICA
+    #endif
+    #ifndef TABSIMB
+    #define TABSIMB 
+    #include "tabsimb.h"
+    #endif
+	#include <stdlib.h>
 int yytype, linha = 1;
 
 int yyerror(char *s) { 
   printf("%s na linha %d\n",s,linha);
   exit(1); 
 }
-#line 512 "analex.c"
-#line 513 "analex.c"
+#line 517 "analex.c"
+#line 518 "analex.c"
 
 #define INITIAL 0
 
@@ -726,11 +731,11 @@ YY_DECL
 		}
 
 	{
-#line 19 "analex.l"
+#line 24 "analex.l"
 
 
 
-#line 734 "analex.c"
+#line 739 "analex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -789,157 +794,157 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "analex.l"
+#line 27 "analex.l"
 {return WHILE;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "analex.l"
+#line 28 "analex.l"
 {return IF;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 24 "analex.l"
+#line 29 "analex.l"
 {return ELSE;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 25 "analex.l"
+#line 30 "analex.l"
 {return INT;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "analex.l"
+#line 31 "analex.l"
 {return FLOAT;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 27 "analex.l"
+#line 32 "analex.l"
 {return CHAR;} 
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 28 "analex.l"
+#line 33 "analex.l"
 {return VOID;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 29 "analex.l"
+#line 34 "analex.l"
 {return ENDIF;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 32 "analex.l"
+#line 37 "analex.l"
 {return '+';}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 33 "analex.l"
+#line 38 "analex.l"
 {return '-';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 34 "analex.l"
+#line 39 "analex.l"
 {return '*';}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 35 "analex.l"
+#line 40 "analex.l"
 {return '/';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 36 "analex.l"
+#line 41 "analex.l"
 {return '%';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 39 "analex.l"
+#line 44 "analex.l"
 {return GE;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 40 "analex.l"
+#line 45 "analex.l"
 {return LE;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 41 "analex.l"
+#line 46 "analex.l"
 {return '>';}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 42 "analex.l"
+#line 47 "analex.l"
 {return '<';}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 43 "analex.l"
+#line 48 "analex.l"
 {return EQ;} 	
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "analex.l"
+#line 51 "analex.l"
 {return AND;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 47 "analex.l"
+#line 52 "analex.l"
 {return OR;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 48 "analex.l"
+#line 53 "analex.l"
 {return NOT;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 51 "analex.l"
+#line 56 "analex.l"
 {return '=';}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 54 "analex.l"
+#line 59 "analex.l"
 {return '[';}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 55 "analex.l"
+#line 60 "analex.l"
 {return ']';}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 56 "analex.l"
+#line 61 "analex.l"
 {return '(';}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 57 "analex.l"
+#line 62 "analex.l"
 {return ')';}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 58 "analex.l"
+#line 63 "analex.l"
 {return '{';}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 59 "analex.l"
+#line 64 "analex.l"
 {return '}';}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 60 "analex.l"
+#line 65 "analex.l"
 {return ';';}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 61 "analex.l"
+#line 66 "analex.l"
 {return ',';}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "analex.l"
+#line 68 "analex.l"
 {
     yylval.val = atoi(yytext);
     yytype = INT;
@@ -948,7 +953,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 69 "analex.l"
+#line 74 "analex.l"
 {
     yylval.val = atof(yytext);
     yytype = FLOAT;
@@ -958,7 +963,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 76 "analex.l"
+#line 81 "analex.l"
 {
     yylval.val = insere(yytext); 
     return ID;
@@ -967,32 +972,32 @@ YY_RULE_SETUP
 case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
-#line 81 "analex.l"
+#line 86 "analex.l"
 { return STRING; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 82 "analex.l"
+#line 87 "analex.l"
 {}
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 83 "analex.l"
+#line 88 "analex.l"
 { linha++; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 84 "analex.l"
+#line 89 "analex.l"
 {printf("erro lexico na linha %d - %s\n",
              linha, yytext); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 86 "analex.l"
+#line 91 "analex.l"
 ECHO;
 	YY_BREAK
-#line 996 "analex.c"
+#line 1001 "analex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1997,7 +2002,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 86 "analex.l"
+#line 91 "analex.l"
 
 
 #ifndef yywrap

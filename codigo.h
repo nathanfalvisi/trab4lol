@@ -1,13 +1,11 @@
-#ifndef SEMANTIC
-#include "semantic.h"
-#endif
-#ifndef LISTA
-#include "listacodigo.h"
-#endif
 #ifndef TABSIMB
+#define TABSIMB 
 #include "tabsimb.h"
 #endif
-#define CODIGO
+#ifndef LISTA
+#define LISTA
+#include "listacodigo.h"
+#endif
 
 int temp=-1;
 int newTemp() {
@@ -69,39 +67,29 @@ void adiciona_argumentos(char **code, int id, struct ids Args){
 
 /* Geração de código para chamada de função */
 void Call(struct no* Call, int Id, struct ids Args) {
-    create_cod(&Call->code);
-    if (Args.tam > 0) { // Verifique se há argumentos
-        adiciona_argumentos(&Call->code, Id, Args); 
-    }
-    sprintf(instrucao, "\tjal %s\n", nome);  
+    adiciona_argumentos(&Call->code, Id, Args);
+    sprintf(instrucao, "\tjal %s\n", obtemNome(Id));  
     insert_cod(&Call->code, instrucao);
 }
 
 /* Geração de código para chamada de função sem argumentos */
 void Call_blank(struct no* Call) {
-    create_cod(&Call->code);
     sprintf(instrucao, "\tjal %s\n", nome);  
     insert_cod(&Call->code, instrucao);
 }
 
 /* Geração de código para atribuições */
-char* get_place(int id) {
-    static char reg[10];
-    sprintf(reg, "r%d", id);
-    return reg;
-}
-
-void Atrib(struct no* atribuido, struct no exp)
-{
+void Atrib(struct no* atribuido, struct no exp){
 	char dest[5], source[5];
 	create_cod(&atribuido->code);
+    insert_cod(&atribuido->code, exp.code);
 	getName(atribuido->place, dest);
 	getName(exp.place, source);
-	sprintf(instrucao,"\tmove %s, %s\n", dest, source);
+	sprintf(instrucao,"\tmove %s,%s\n", dest, source);
 	insert_cod(&atribuido->code, instrucao);
-    if(exp.code != NULL)
-	    insert_cod(&atribuido->code, exp.code);
+    
 }
+
 /* Geração de código para carregar constantes */
 void Li(struct no *Exp, int num) {
 	char name_dest[5];
@@ -124,7 +112,7 @@ void Exp_Ari(struct no *Exp, struct no Exp1, struct no Exp2, char *op) {
 	getName(Exp1.place,name_reg1);
 	getName(Exp2.place,name_reg2);
 	getName(Exp->place,name_temp);
-	sprintf(instrucao,"\t %s %s,%s,%s\n",op,name_temp,name_reg1, name_reg2);
+	sprintf(instrucao,"\t%s %s,%s,%s\n",op,name_temp,name_reg1, name_reg2);
 	insert_cod(&Exp->code,instrucao);
 }
 
@@ -144,7 +132,7 @@ void Exp_Rel(struct no *Exp, struct no Exp1, struct no Exp2, char *branch){
 	sprintf(instrucao,"\tli %s,1\n",name_temp);
 	insert_cod(&Exp->code,instrucao);
 	newLabel();
-	sprintf(instrucao,"\t%s,%s,%s,L%d\n",name_reg1,name_reg2,branch,label);
+	sprintf(instrucao,"\t%s %s,%s,L%d\n",branch, name_reg1,name_reg2,label);
 	insert_cod(&Exp->code,instrucao);
 	sprintf(instrucao,"\tli %s,0\n",name_temp);
 	insert_cod(&Exp->code,instrucao);
@@ -164,23 +152,22 @@ void Exp_Log(struct no *Exp, struct no Exp1, struct no Exp2, char *logic){
 	getName(Exp1.place,name_reg1);
 	getName(Exp2.place,name_reg2);
 	getName(Exp->place,name_temp);
-	sprintf(instrucao,"\t%s,%s,%s\n",name_reg1,name_reg2, logic);
+	sprintf(instrucao,"\t%s,%s,%s\n",logic,name_reg1,name_reg2);
 	insert_cod(&Exp->code,instrucao);
 }
 
 /* Geração de código para ifs sem else */
-void If(struct no *If, struct no Exp, struct no Body)  
-{  
+void If(struct no *If, struct no Exp, struct no Body){  
     char name_cond[5];
     char label_end[8];
     create_cod(&If->code);
     insert_cod(&If->code, Exp.code);
     sprintf(label_end, "L%d", newLabel());
     getName(Exp.place, name_cond);
-    sprintf(instrucao, "\tbeq %s, $zero, %s\n", name_cond, label_end);
+    sprintf(instrucao, "\tbeq %s,0,%s\n",name_cond,label_end);
     insert_cod(&If->code, instrucao);
     insert_cod(&If->code, Body.code);
-    sprintf(instrucao, "%s:\n", label_end);
+    sprintf(instrucao, "%s:\n",label_end);
     insert_cod(&If->code, instrucao);
 }
 
@@ -195,7 +182,7 @@ void IfElse(struct no *IfElse, struct no Exp, struct no BodyIf, struct no BodyEl
     sprintf(label_else, "L%d", newLabel());
     sprintf(label_end, "L%d", newLabel());
     getName(Exp.place, name_cond);
-    sprintf(instrucao, "\tbeq %s, $zero, %s\n", name_cond, label_else);
+    sprintf(instrucao, "\tbeq %s,0,%s\n", name_cond, label_else);
     insert_cod(&IfElse->code, instrucao);
     insert_cod(&IfElse->code, BodyIf.code);
     sprintf(instrucao, "\tj %s\n", label_end);
@@ -219,7 +206,7 @@ void While(struct no *While, struct no Exp, struct no Body) {
     insert_cod(&While->code, instrucao);
     insert_cod(&While->code, Exp.code);
     getName(Exp.place, name_cond);
-    sprintf(instrucao, "\tbeq %s, $zero, %s\n", name_cond, label_end);
+    sprintf(instrucao, "\tbeq %s,0,%s\n", name_cond, label_end);
     insert_cod(&While->code, instrucao);
     insert_cod(&While->code, Body.code);
     sprintf(instrucao, "\tj %s\n", label_start);
@@ -243,7 +230,7 @@ void DoWhile(struct no *DoWhile, struct no Body, struct no Exp) {
     insert_cod(&DoWhile->code, instrucao);
     insert_cod(&DoWhile->code, Exp.code);
     getName(Exp.place, name_cond);
-    sprintf(instrucao, "\tbne %s, $zero, %s\n", name_cond, label_start);
+    sprintf(instrucao, "\tbne %s,0,%s\n", name_cond, label_start);
     insert_cod(&DoWhile->code, instrucao);
 }
 

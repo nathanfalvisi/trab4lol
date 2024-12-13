@@ -1,41 +1,41 @@
 main:
-	move $s2, $t0
 	li $t0,60
-	move $s1, $t1
+	move $s2,$t0
 	li $t1,0
+	move $s1,$t1
 L8:
 	li $t2,1
-	$s2,$s1,bgt,L1
+	bgt $s2,$s1,L1
 	li $t2,0
 L1:
-	beq $t2, $zero, L9
+	beq $t2,0,L9
 	li $t3,10
 	li $t4,1
-	$s1,$t3,blt,L2
+	blt $s1,$t3,L2
 	li $t4,0
 L2:
-	beq $t4, $zero, L6
-	move $s1, $t7
+	beq $t4,0,L6
 	li $t5,3
-	 div $t6,$s2,$t5
-	 add $t7,$s1,$s1
+	div $t6,$s2,$t5
+	add $t7,$s1,$t6
+	move $s1,$t7
 	j L7
 L6:
 	li $t8,20
 	li $t9,1
-	$s1,$t8,blt,L3
+	blt $s1,$t8,L3
 	li $t9,0
 L3:
-	beq $t9, $zero, L4
-	move $s1, $t12
+	beq $t9,0,L4
 	li $t10,6
-	 div $t11,$s2,$t10
-	 add $t12,$s1,$t11
+	div $t11,$s2,$t10
+	add $t12,$s1,$t11
+	move $s1,$t12
 	j L5
 L4:
-	move $s1, $t14
 	li $t13,1
-	 add $t14,$s1,$t13
+	add $t14,$s1,$t13
+	move $s1,$t14
 L5:
 L7:
 	j L8

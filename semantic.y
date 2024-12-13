@@ -1,12 +1,20 @@
 	%{ 
 	/* Para simplificar a notação, S é para sintetizar. A atualizar. V verificar */
-	#include "analex.c" 
+    #include <string.h>
+	#ifndef  ANALEX
+	#include "analex.c"
+	#define ANALEX
+	#endif 
+    #ifndef  CODIGO
 	#include "codigo.h"
-
-	void verifica_var_declarada(int id);
-	void verifica_tipos_atrib(int tipo1, int tipo2);
+    #define CODIGO
+    #endif
+    #ifndef TIPOS
+    #include "tipos.h"
+    #define TIPOS
+    #endif
+    
 	void verifica_numero_argumentos(int id, int num_args);
-	void verifica_indice_valido(int id, int indice);
 		
 	%}
 
@@ -69,19 +77,16 @@
 	%start ProgL
 	%% 
 ProgL : Prog {
-		printf("%s",$1.code);
-	} /* S código. */
+		printf("%s",$1.code);} /* S código. */
     ;
     
 Prog : Prog Function {
 		create_cod(&$$.code); 
 		insert_cod(&$$.code,$1.code); 
-		insert_cod(&$$.code,$2.code);
-	} /* S código. */
+		insert_cod(&$$.code,$2.code);} /* S código. */
 	| Function {
         create_cod(&$$.code); 
-		insert_cod(&$$.code,$1.code); 
-    }/* S código. */
+		insert_cod(&$$.code,$1.code);}/* S código. */
 	;	
 
 Function :
@@ -90,15 +95,13 @@ Function :
         create_cod(&$$.code);
         if($7.code != NULL)
             insert_cod(&$$.code, $7.code);
-        Funct(&$$, $2, $7);        
-    }
+        Funct(&$$, $2, $7);}
     | TypeF ID '(' ')' '{'Statement_Seq '}' {
         adiciona_funcao_tabela(obtemNome($2), $1, NULL); 
         create_cod(&$$.code);
         if($6.code != NULL)
             insert_cod(&$$.code, $6.code);
-        Funct(&$$, $2, $6);                
-    }
+            Funct(&$$, $2, $6);}
     ;
 	
 FunctionCall :
@@ -113,9 +116,7 @@ FunctionCall :
         create_cod(&$$.code);
         if($3.code != NULL)
             insert_cod(&$$.code, $3.code);
-        Call(&$$, funcPos, $3);
-
-    } /* V declaração, # argumentos. S código*/
+        Call(&$$, funcPos, $3);} /* V declaração, # argumentos. S código*/
     | ID '(' ')' {
         int funcPos = procura(obtemNome($1));
         if (funcPos == -1) {
@@ -123,8 +124,7 @@ FunctionCall :
         } else if (Tabela[funcPos].tam_arg_list != 0) {
             yyerror("Número de argumentos incompatível!");
         }
-        Call_blank(&$$);
-    } /* V declaração, # argumentos. S código*/
+        Call_blank(&$$);} /* V declaração, # argumentos. S código*/
     ;
 
     
@@ -142,15 +142,13 @@ ArgList:
             insert_cod(&$$.code, $1.code);
         if($3.code != NULL)
             insert_cod(&$$.code, $3.code);
-        $$.tam++;
-    } /* S código e Lista de IDs*/
+        $$.tam++;} /* S código e Lista de IDs*/
     | Exp {
         create_cod(&$$.code);
         $$.tam = 1;
         $$.ids[0] = $1.place;
         if($1.code != NULL)
-            insert_cod(&$$.code, $1.code);
-    } /* S código e Lista de IDs*/
+            insert_cod(&$$.code, $1.code);} /* S código e Lista de IDs*/
     ;
 
 
@@ -161,7 +159,7 @@ ParamList:
         {
             $$.ids[i] = $1.ids[i];
         }
-        $$.ids[$$.tam] = $4;  // Add the new identifier
+        $$.ids[$$.tam] = $4;
         if(getTipo($4) == -1)
         {
             set_type($$.ids[$$.tam], $3);
@@ -181,16 +179,15 @@ ParamList:
         }
         else 
             if(getTipo($2) != $1)
-                yyerror("Tipos de argumentos incompatíveis!");
-        } /* S Lista de IDs. A Tabela*/
+                yyerror("Tipos de argumentos incompatíveis!");} /* S Lista de IDs. A Tabela*/
     ;
+
 Decl:
     Type IDs {
         int tipo;
         create_cod(&$$.code);
         if ($2.code != NULL)
             insert_cod(&$$.code, $2.code);
-
         for (int i = 0; i < $2.tam; i++)
          {
             tipo = getTipo($2.ids[i]);
@@ -198,11 +195,9 @@ Decl:
             {
                 yyerror("Erro Semântico Decl");
             }
-            set_type($2.ids[i], $1);  // Define o tipo corretamente
-            
+            set_type($2.ids[i], $1);   
         }
-        $2.tam = 0;
-    }
+        $2.tam = 0;}
     ;
 
 	
@@ -212,9 +207,9 @@ IDs:
         {
             $$.ids[$$.tam] = $1.ids[$$.tam];
         }
-        $$.tam++;  // Increment the tam
-        $$.ids[$$.tam] = $3;  // Add the new identifier
-        $$.tam++;  // Increment the tam
+        $$.tam++;
+        $$.ids[$$.tam] = $3;
+        $$.tam++;  
     }
     | IDs ',' Atribuicao {
         for ($$.tam = 0;$$.tam < $1.tam; $$.tam++) 
@@ -224,9 +219,9 @@ IDs:
         int pos = $3.place;
         create_cod(&$$.code);
         insert_cod(&$$.code, $3.code);
-        $$.tam++;  // Increment the tam
+        $$.tam++;
         $$.ids[$$.tam] = pos;
-        $$.tam++;  // Increment the tam
+        $$.tam++;
     }
     | IDs ',' ID '[' NUM ']' {
         if(yytype != INT)
@@ -238,33 +233,26 @@ IDs:
             $$.ids[$$.tam] = $1.ids[$$.tam];
         }
         $$.tam++;
-        $$.ids[$$.tam] = $3;  // Add the new identifier with array
-        $$.tam++;  // Increment the tam
-    }
-    | ID '[' NUM ']' 
-    {
+        $$.ids[$$.tam] = $3;
+        $$.tam++;}
+    | ID '[' NUM ']' {
         if(yytype != INT)
             yyerror("Indices de vetor não inteiro");
-        $$.ids[$$.tam] = $1;
-    }
-    | ID 
-    {
+                $$.ids[$$.tam] = $1;}
+    | ID {
         $$.tam = 1;
-        $$.ids[$$.tam] = $1; 
-    }
-    | Atribuicao 
-    {
+        $$.ids[$$.tam] = $1;}
+    | Atribuicao {
         int pos = $1.place;
         create_cod(&$$.code);
         insert_cod(&$$.code, $1.code);
         $$.tam++;
-        $$.ids[$$.tam] = pos; 
-    }
+        $$.ids[$$.tam] = pos;}
     ;
 
 TypeF :
 	  VOID {$$ = VOID;} /* S Tipo. */
-	| Type {}
+	| Type {$$ = $1;}
 	;
 
 Type :
@@ -340,7 +328,7 @@ Atribuicao :
     {
         if(invalidtype(getTipo($1), $6.tipo) == -1)
         {
-            yyerror("Tipos incompatíveis");
+            yyerror("Uso de Variável não declarada");
         }
         if(yytype != INT)
         {
@@ -357,8 +345,7 @@ Atribuicao :
         }
         $$.place = $1;
         Atrib(&$$, $3);
-        $$.tipo = rtd(getTipo($1), $3.tipo);
-    } /* S tipo, place, código. */
+        $$.tipo = rtd(getTipo($1), $3.tipo);} /* S tipo, place, código. */
     ;
 
 
@@ -366,7 +353,7 @@ Atribuicao :
 		Exp '+' Exp {$$.tipo = rtd($1.tipo, $3.tipo); Exp_Ari(&$$, $1, $3, "add");} /* S tipo, cod */
 		| Exp '-' Exp {$$.tipo = rtd($1.tipo, $3.tipo); Exp_Ari(&$$, $1, $3, "sub");} /* S tipo, cod */
 		| Exp '*' Exp {$$.tipo = rtd($1.tipo, $3.tipo); Exp_Ari(&$$, $1, $3, "mul");} /* S tipo, cod */
-		| Exp '/' Exp {$$.tipo = rtd($1.tipo, $3.tipo);Exp_Ari(&$$, $1, $3, "div");} /* S tipo, cod */
+		| Exp '/' Exp {$$.tipo = rtd($1.stipo, $3.tipo);Exp_Ari(&$$, $1, $3, "div");} /* S tipo, cod */
 		| Exp '>' Exp {$$.tipo = rtd($1.tipo, $3.tipo); Exp_Rel(&$$, $1, $3, "bgt");} /* S tipo, cod (bgt) */
 		| Exp '<' Exp {$$.tipo = rtd($1.tipo, $3.tipo); Exp_Rel(&$$, $1, $3, "blt");} /* S tipo, cod (blt) */
 		| Exp GE Exp {$$.tipo = INT;} /*  S tipo. Não precisa implementar código */
@@ -380,16 +367,16 @@ Atribuicao :
             create_cod(&$$.code);
             if($2.code != NULL)
                 insert_cod(&$$.code, $2.code);
-		        $$.tipo = $2.tipo;} /*  S tipo, cod */
+		        $$.tipo = $2.tipo;
+                $$ = $2;} /*  S tipo, cod */
 		| NUM { 
-        if (yytype == FLOAT) 
-        {
-            $$.tipo = FLOAT;
-            Li(&$$, yylval.val);
-        } else {
-            $$.tipo = INT;
-            Li(&$$, yylval.val);
-        }} /* S tipo, código */
+            if (yytype == FLOAT) 
+            {
+                $$.tipo = FLOAT;
+                Li(&$$, yylval.val);
+            } else {
+                $$.tipo = INT;
+                Li(&$$, yylval.val);}} /* S tipo, código */
 		| FLOAT {$$.tipo = FLOAT;}
 	    | ID '[' NUM ']' {
             if(getTipo($1) == -1)
@@ -405,7 +392,7 @@ Atribuicao :
                 insert_cod(&$$.code, $3.code);
             $$.tipo = getTipo($1);
             $$.place = newTemp();} /* V declaracao, indice. S tipo, codigo  */
-	    | ID  {
+	    | ID {
             int tipo = getTipo($1);
             if(tipo == -1){
                 yyerror("Uso de variável não declarada");
@@ -422,31 +409,11 @@ Atribuicao :
 	} 
 
 	/* Funcoes auxiliares podem ser implementadas aqui */
-void verifica_var_declarada(int id) {
-    if (Tabela[id].tipo == 0) { 
-        fprintf(stderr, "Erro Semântico: Variável %s não foi declarada na linha %d.\n", Tabela[id].nome, yylineno);
-        exit(1); 
-    }
-}
-void verifica_tipos_atrib(int tipo1, int tipo2) {
-    if (tipo1 != tipo2) {
-        fprintf(stderr, "Erro Semântico: Tipos incompatíveis na linha %d.\n", yylineno);
-        exit(1);
-    }
-}
 
 void verifica_numero_argumentos(int id, int num_args) {
     if (Tabela[id].tam_arg_list != num_args) {
         fprintf(stderr, "Erro: Função %s esperava %d argumentos, mas recebeu %d.\n",
                 Tabela[id].nome, Tabela[id].tam_arg_list, num_args);
-        exit(1);
-    }
-}
-
-void verifica_indice_valido(int id, int indice) {
-    if (indice < 0 || indice >= Tabela[id].tam) {
-        fprintf(stderr, "Erro Semântico: Índice %d fora dos limites do vetor %s na linha %d.\n", 
-                indice, Tabela[id].nome, yylineno);
         exit(1);
     }
 }
